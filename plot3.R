@@ -17,14 +17,16 @@ dt <- read.table("household_power_consumption.txt", sep=";", skip=66637, nrows=2
 # compute new datatime feature
 
 dd <- data.table(dt)
-#dd[, e:=paste(dd$Date , dd$Time, sep=" ")]                          # concatenate
-#dd[, ee:=as.POSIXct(strptime(dd$e, format="%d/%m/%Y %H:%M:%S"))]    # get rid of C-structure
 dd[, ee:= { tmp <-paste(dd$Date , dd$Time, sep=" "); as.POSIXct(strptime(tmp, format="%d/%m/%Y %H:%M:%S")) }] 
 
 # plot
 
-with(dd, plot(ee, Global_active_power, type="l", xlab="", ylab="Global Active Power (kilowatts)"))
+with(dd, plot(ee, Sub_metering_1, type="n", xlab="", ylab="Energy sub metering"))
+with(dd, points(ee,Sub_metering_1, type="l", col="black"))
+with(dd, points(ee,Sub_metering_2, type="l", col="red"))
+with(dd, points(ee,Sub_metering_3, type="l", col="blue"))
+legend("topright", col = c("black", "red", "blue"), legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), lwd=1)
 
 # save the graph to file
-dev.copy(png, file="plot2.png", width=480, height=480)
+dev.copy(png, file="plot3.png", width=480, height=480)
 dev.off()
